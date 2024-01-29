@@ -79,9 +79,10 @@ public class PlayerMovement : MonoBehaviour
     {
         //creamos una línea que nos permitirá mover al personaje
         //llamamos a la función MovePosition del rigidbody y le decimos que su nueva posición será (posición actual + movimiento * magnituddeltadeanimación)
-        //sin embargo no podemos rotar aún
+        //El deltaPosition.magnitude sincroniza el movimiento real con el desplazamiento de la animación 
+        //sin embargo no podemos rotar aún´, para ello sirve la siguiente línea. 
         m_Rigidbody.MovePosition(m_Rigidbody.position + m_Movement * m_Animator.deltaPosition.magnitude);
-        //Línea para rotar al personaje (ya habíamos declarado previamente cómo rotaba, asi que ponemos tan solo m_Rotation.
+        //Línea para rotar al personaje (ya habíamos declarado previamente cómo rotaba, asi que ponemos tan solo m_Rotation)
         m_Rigidbody.MoveRotation(m_Rotation);
     }
 
