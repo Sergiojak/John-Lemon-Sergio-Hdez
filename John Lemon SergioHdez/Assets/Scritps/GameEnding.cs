@@ -26,6 +26,12 @@ public class GameEnding : MonoBehaviour
     //ahora para si es capturado
     bool m_IsPlayerCaught;
 
+    //Para que funcionen los sonidos de cuando ganas y te pillan necesitamos crear 3 variables
+    //Una para el sonido de win, otra para el sonido de lose y otra bool para saver si se ha reproducido el sonido o no
+    public AudioSource exitSource;
+    public AudioSource caughtSource;
+    bool m_HasAudioPlayed;
+
     //Creamos una función OnTriggerEnter para poder usar el trigger del collider de la WinZone
     private void OnTriggerEnter(Collider other)
     {
@@ -43,14 +49,14 @@ public class GameEnding : MonoBehaviour
         if (m_IsPlayerAtExit == true)
         {
             //este para que sea de la victoria le ponemos en los paréntesis exitbackgr
-            EndLevel(exitBackgroundImageCanvasGroup, false);
+            EndLevel(exitBackgroundImageCanvasGroup, false, exitSource);
             //Hasta aquí solo funciona para la victoria, falta para la derrota, por lo que añadimos otro if
             //Le decimos que si no es verdadero, verifique si isPlayerCaught es verdadero
         }
         else if (m_IsPlayerCaught == true)
         {
             //este para que sea de la derrota le ponemos en los paréntesis caughtbackgr
-            EndLevel(caughtBackgroundImageCanvas, true);
+            EndLevel(caughtBackgroundImageCanvas, true, caughtSource);
         }
 
         /* Otra manera de hacerlo más ordenada y compacta es así, usando un "or" (las dos barritas || así) pero el tutorial lo pide de otra manera
@@ -62,9 +68,18 @@ public class GameEnding : MonoBehaviour
     }
     //Para que use la  imagen del canvas de victoria o derrota dependiendo de lo que suceda, necesitamos añadirle a la función CanvasGroup imageCanvasGroup
     //tb le creamos un bool para que no se reinicie el juego si ganamos pero sí cuando perdemos (vamos a las funciones EndLevel de los ifs de encima y le ponemos a uno false y al otro true)
-    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart)
+    //por último le añadimos el audioSource (hay que cambiarlo en todo tb y decirle cuál es cuál)
+    void EndLevel(CanvasGroup imageCanvasGroup, bool doRestart, AudioSource audioSource)
 
     {
+        //Este if nos confirma que el sonido no ha sido reproducido
+        if (!m_HasAudioPlayed)
+        {
+            audioSource.Play();
+            m_HasAudioPlayed = true;
+        }
+
+
         //usamos la variable del timer para que incremente por Time.deltatime, para que vaya suave cambiando con los FPSs
         //y el componente.alpha del canvasgroup que tenemos, el cual durará el timer dividido en fadeDuration, es decir,
         //hará la transición del alpha a lo largo de lo que dure el fade duration (de forma suave gracias a que timer += Timedeltatime)

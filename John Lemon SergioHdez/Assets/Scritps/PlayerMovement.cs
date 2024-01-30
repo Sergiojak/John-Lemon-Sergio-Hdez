@@ -20,13 +20,15 @@ public class PlayerMovement : MonoBehaviour
     //Declaramos el rigidbody para poder usarlo
     Rigidbody m_Rigidbody;
 
+    private AudioSource m_AudioSource;
+
     void Start()
     {
         //Creo el acceso al componente Animator, la variable del Animator está llamando al componente Animator 
         m_Animator = GetComponent<Animator>();
         //Lo mismo pero con Rigidbody, pillamos el acceso
         m_Rigidbody = GetComponent<Rigidbody>();
-
+        m_AudioSource = GetComponent<AudioSource>();
     }
 
     //Usamos FixedUpdate por temas de físicas
@@ -59,6 +61,25 @@ public class PlayerMovement : MonoBehaviour
         //Queremos que esta booleana actualice el animator IsWalking del Unity, para ello usamos la variable del Animator creada y lo configuramos:
         //En el string tenemos que poner EXACTAMENTE el nombre que pusimos en el animator del Unity, o sea el IsWalking, y luego el valor de la booleana (declarado encima por el isWalking)
         m_Animator.SetBool("IsWalking", isWalking);
+
+        //creamos el if con un else para que si camina se reproduzca el sonido, o si no pues que no lo haga
+        //en caso de que esté caminando
+        if (isWalking)
+        {
+            //si el sonido NO se está reproduciendo
+            if(!m_AudioSource.isPlaying)
+            {
+                //pues que se reproduzca
+                m_AudioSource.Play();
+            }
+        }
+        //en caso de que no esté caminando
+        else
+        {
+            m_AudioSource.Stop();
+
+        }
+
 
         //Ahora para rotar al personaje:
         //La rotación está conformada por 3 elementos(XYZ) por lo que será un Vector3 que llamamos desiredforward (por ejemplo)
