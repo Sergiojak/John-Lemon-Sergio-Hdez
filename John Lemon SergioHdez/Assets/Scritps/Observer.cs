@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class Observer : MonoBehaviour
 {
@@ -15,9 +16,29 @@ public class Observer : MonoBehaviour
     //(a la cual hace falta añadirle lo mismo que salte el winscreen pero con la losescreen)
     public GameEnding gameEnding;
 
+    //EXAMEN JOHN LEMON 
+    //Temporizador para detectar al personaje
+    //Máximo para ser detectado 2 segundos
+    public float m_LimiteDeteccion = 2f;
+    //Temporizador que va aumentando cada frame (igual que con el timer del GameEnding y su float de desvanecimiento de imagen)
+    //Usar time.Deltatime; con el += para que aumente por frame en el Update
+    float m_Detectando;
+
+    //Audio Alerta
+    //Usamos la componente
+    public AudioSource alertaTindeck;
+    //para que no suene constantemente usamos la bool
+    bool m_AudioAlertaNecesario;
+
+    public GameObject ExclamacionAlerta;
+
+
     void Start()
     {
-        
+        //No hace falta usar el GetComponent del AudioSource porque ya lo añadimos al prefab desde el inspector
+        m_AudioAlertaNecesario = false;
+        m_Detectando = 0f;
+
     }
 
     //Creamos una función OnTriggerEnter
@@ -27,8 +48,15 @@ public class Observer : MonoBehaviour
         if (other.transform == player)
         {
             m_IsPlayerInRange = true;
-        }
 
+            //el jugador entró en el trigger, ahora que se active el audio
+            m_AudioAlertaNecesario = true;
+            if(m_AudioAlertaNecesario == true)
+            {
+                alertaTindeck.Play();
+                Debug.Log("Audio de Alerta Tindeck Sonando");
+            }
+        }
     }
     //Creamos una función OnTriggerExit
     private void OnTriggerExit(Collider other)
@@ -37,6 +65,9 @@ public class Observer : MonoBehaviour
         if(other.transform == player)
         {
             m_IsPlayerInRange = false;
+            //salimos del trigger, no necesitamos el audio
+            m_AudioAlertaNecesario = false;
+
         }
 
     }
@@ -59,15 +90,42 @@ public class Observer : MonoBehaviour
             {
                 //está viendo algo (sea pared o jugador) necesitamos comprobar que no haya nada en medio y sea el jugador.
               if (raycastHit.collider.transform == player)
-                {
+              {
                     //está viendo al jugador
-                    //llamamos a la función CaughtPlayer del script/clase gameEnding, (que vuelve verdadero que han pillado al personaje)
-                    gameEnding.CaughtPlayer();
-                }
+                    //El tiempo empieza a contar
+                    m_Detectando += Time.deltaTime;
+                    Debug.Log("Te están viendo " + m_Detectando);
+                    Debug.Log("Quedan " + (m_Detectando - m_LimiteDeteccion) + " segundos para ser detectado" );
+                    //Llama a la función que acabará la partida si el jugador es detectado por 2 segundos
+                    DetectandoJugador();
+                    Alerta();
+              }
             }
         }
+        else
+        {
+            //Si NO está el jugador en rango del rayo (else), el temporizador estará en CERO
+            m_Detectando = 0f;
+            ExclamacionAlerta.SetActive(false);
+
+        }
     }
-
-
-
+    void DetectandoJugador()
+    {
+        //Si el tiempo que ha empezado a contar supera el límite puesto, se hará lo siguiente
+        if (m_Detectando > m_LimiteDeteccion)
+        {
+            //llamamos a la función CaughtPlayer del script/clase gameEnding, (que vuelve verdadero que han pillado al personaje)
+            //Con esto se acaba la partida
+            gameEnding.CaughtPlayer();
+            //aparece pantalla de derrota
+            Debug.Log("Te han pillado! Fin de la partida.");
+        }
+    }
+    //Función para que se active el canvas y muestre la exclamación
+    void Alerta()
+    {
+        ExclamacionAlerta.SetActive(true);
+        Debug.Log("Aparece exclamacion");
+    }
 }

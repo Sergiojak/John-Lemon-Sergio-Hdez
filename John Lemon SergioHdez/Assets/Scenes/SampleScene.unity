@@ -1747,6 +1747,10 @@ PrefabInstance:
       propertyPath: gameEnding
       value: 
       objectReference: {fileID: 1087619634}
+    - target: {fileID: 526103540032399056, guid: 7568efbbd34e1e748a36a7b030db6b76, type: 3}
+      propertyPath: BackgroundExclamacionAlerta
+      value: 
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7568efbbd34e1e748a36a7b030db6b76, type: 3}
 --- !u!4 &1608234186 stripped
@@ -5263,5 +5267,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1223426158353009259, guid: 38985a2127cf33b419a7bb08a6d88b1b, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 38985a2127cf33b419a7bb08a6d88b1b, type: 3}
